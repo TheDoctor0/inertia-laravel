@@ -270,7 +270,9 @@ class Response implements Responsable
             }
 
             if ($value instanceof Responsable) {
-                $_response = $value->toResponse($request);
+                $_response = tap($value, static function ($value) {
+                    $value->withoutWrapping();
+                })->toResponse($request);
 
                 if (method_exists($_response, 'getData')) {
                     $value = $_response->getData(true);
